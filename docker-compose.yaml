@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: "rabbitmq_demo"
+    restart: always
+
+  consumer-api:
+    image: consumer-api
+    container_name: consumer-api
+    build:
+      context: .
+      dockerfile: src/MasstransitRabbitMQ.Consumer.API/Dockerfile
+    ports:
+      - "5000:80"
+      - "5001:8081"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+    depends_on:
+      - rabbitmq
+    restart: always
+
+  producer-api:
+    image: producer-api
+    container_name: producer-api
+    build:
+      context: .
+      dockerfile: src/MasstransitRabbitMQ.Producer.API/Dockerfile
+    ports:
+      - "5002:80"
+      - "5003:8081"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+    depends_on:
+      - rabbitmq
+    restart: always
