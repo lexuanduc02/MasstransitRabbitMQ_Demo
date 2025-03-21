@@ -5,7 +5,7 @@ using MediatR;
 namespace MasstransitRabbitMQ.Consumer.API.Abtractions.Messages
 {
     public abstract class Consumer<TMessage> : IConsumer<TMessage>
-        where TMessage : class, INotificationEvent
+    where TMessage : class, INotificationEvent
     {
         private readonly ISender _sender;
 

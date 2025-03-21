@@ -16,7 +16,7 @@ namespace MasstransitRabbitMQ.Producer.API.Controllers
             _publishEndpoint = publishEndpoint;
         }
 
-        [HttpPost(Name = "PublishSmsNotificationEvent")]
+        [HttpPost("PublishSmsNotificationEvent")]
         public async Task<IActionResult> PublishSmsNotificationEvent()
         {
             await _publishEndpoint.Publish(new SmsNotificationEvent
@@ -26,6 +26,21 @@ namespace MasstransitRabbitMQ.Producer.API.Controllers
                 Name = "Sms Notification",
                 Description = "This is a sms notification",
                 Type = NotificationType.SMS,
+                TransactionId = Guid.NewGuid()
+            });
+            return Accepted();
+        }
+
+        [HttpPost("PublishEmailNotificationEvent")]
+        public async Task<IActionResult> PublishEmailNotificationEvent()
+        {
+            await _publishEndpoint.Publish(new EmailNotificationEvent
+            {
+                Id = Guid.NewGuid(),
+                TimeStamp = DateTimeOffset.UtcNow,
+                Name = "Email Notification",
+                Description = "This is a email notification",
+                Type = NotificationType.EMAIL,
                 TransactionId = Guid.NewGuid()
             });
             return Accepted();
